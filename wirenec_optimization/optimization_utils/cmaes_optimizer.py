@@ -11,6 +11,9 @@ from wirenec_optimization.parametrization.base_parametrization import BaseStruct
 
 from wirenec.geometry import Wire, Geometry
 
+from wirenec_optimization.optimization_utils.hyperparams import parametrization_hyperparams, optimization_hyperparams, \
+    scattering_hyperparams, object_hyperparams
+
 def create_wire_bundle_geometry(lengths, tau):
     m, n = lengths.shape
 
@@ -29,42 +32,21 @@ def objective_function(
         freq: [list, tuple, np.ndarray] = tuple([9000, 1000]),
         geometry: bool = False, scattering_angle: tuple = (90)
 ):
-    #g = parametrization.get_geometry(params=params)
-    #g.rotate(0, 0, np.pi/2)
-    #g.translate([0, -2*1e-2, 0])
-    length = 3*1e-2
-    gap = length/2
-    wire_radius = 0.5 * 1e-4
-    height = 3 * 1e-2
-    tau_A = 12.87 *1e-3
-    lengths_A = np.array([
-        [21.61, 19.84, 21.61],
-        [26, 0, 26],
-        [21.61, 19.84, 21.61]
-    ]) * 1e-3
-    #g = create_wire_bundle_geometry(lengths_A, tau_A)
-    g = Geometry([Wire((0., -height/3, height),
-                       (0., height/3, height),
-                        0.5 * 1e-4)])
-    # g = Geometry([Wire((gap / 2, length / 2, height), (length / 2, length / 2, height), wire_radius),
-    #                 Wire((length / 2, length / 2, height), (length / 2, -length / 2, height), wire_radius),
-    #                 Wire((length / 2, -length / 2, height), (-length / 2, -length / 2, height), wire_radius),
-    #                 Wire((-length / 2, -length / 2, height), (-length / 2, length / 2, height), wire_radius),
-    #                 Wire((-length / 2, length / 2, height), (-gap / 2, length / 2, height), wire_radius)])
-    #g.wires.extend(unmoving_geometry.wires)
+    length = object_hyperparams['obj_length']
+    wire_radius = object_hyperparams['wire_radius']
+    height = object_hyperparams['dist_from_obj_to_surf']
+    unmov_g = Geometry([Wire((0., -length, height),
+                       (0., length, height),
+                        wire_radius)])
+    g = parametrization.get_geometry(params=params)
+    g.wires.extend(unmov_g.wires)
     scat_on_freq = []
     if not geometry:
         for angle in scattering_angle:
-            scattering, _ = get_scattering_in_frequency_range(g, freq, angle, 90, 0, angle)
+            scattering, _ = get_scattering_in_frequency_range(unmov_g, optimization_hyperparams['frequencies'], angle,
+                                                              scattering_hyperparams['phi'], scattering_hyperparams['eta'], angle)
             scat_on_freq.append(scattering)
         return np.mean(scat_on_freq)
-        # for i in range(len(scattering_angle)):
-        #     scattering, _ = get_scattering_in_frequency_range(
-        #         g, freq, 90, 90, 90, scattering_angle[i]
-        #     )
-        #     p = 1/scattering
-            # return (-1) * np.mean(scattering)
-            #return (-1)*(p*scattering[0] + p*scattering[1] + p*scattering[2])
     else:
         return g
 
@@ -89,7 +71,6 @@ def cma_optimizer(
         plot_progress: bool = False,
         scattering_angle: float = 90,
         population_size_factor: float = 1,
-        eta: float = 0
 ):
     np.random.seed(seed)
     bounds = structure_parametrization.bounds
