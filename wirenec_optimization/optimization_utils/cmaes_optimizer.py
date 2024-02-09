@@ -43,7 +43,7 @@ def objective_function(
     scat_on_freq = []
     if not geometry:
         for angle in scattering_angle:
-            scattering, _ = get_scattering_in_frequency_range(unmov_g, optimization_hyperparams['frequencies'], angle,
+            scattering, _ = get_scattering_in_frequency_range(g, optimization_hyperparams['frequencies'], angle,
                                                               scattering_hyperparams['phi'], scattering_hyperparams['eta'], angle)
             scat_on_freq.append(scattering)
         return np.mean(scat_on_freq)

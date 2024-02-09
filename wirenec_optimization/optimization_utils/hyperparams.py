@@ -29,7 +29,7 @@ scattering_hyperparams = {
 }
 
 optimization_hyperparams = {
-    'iterations': 1,
+    'iterations': 10,
     'seed': 42,
     'frequencies': tuple(freq_maker(10000, scattering_hyperparams['band_width'])),
     'scattering_angle': tuple([180])
