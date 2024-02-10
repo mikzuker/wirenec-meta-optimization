@@ -37,7 +37,7 @@ def save_results(
         opt_hyperparams: dict,
         scat_hyperparams: dict,
         optimized_dict: dict,
-        path: str = "data/optimization/",
+        path: str = "data/bandwidth_optimization/",
 ):
     path += f'{parametrization.structure_name}__'
     for param, value in param_hyperparams.items():
@@ -56,22 +56,9 @@ def save_results(
 
     scatter = scattering_plot(
         ax[0], g_optimized, theta=scat_hyperparams['theta'], eta=scat_hyperparams['eta'], num_points=100,
-        scattering_phi_angle=optimization_hyperparams['scattering_angle'][0],
+        scattering_phi_angle=optimization_hyperparams['scattering_angle'][0], plt_sp=True,
         label='Scattering angle:' + ' ' + str(optimization_hyperparams['scattering_angle'][0]) + '$\degree$'
     )
-
-    # scatter_2 = scattering_plot(
-    #     ax[0],  g_optimized, theta=scattering_angle[1], eta=0, num_points=100,
-    #     scattering_phi_angle=scattering_angle[1],
-    #     label='Scattering angle:' + ' ' + str(scattering_angle[1]) + '$\degree$'
-    # )
-    #
-    # scatter_3 = scattering_plot(
-    #     ax[0], g_optimized, theta=scattering_angle[2], eta=0, num_points=100,
-    #     scattering_phi_angle=scattering_angle[2],
-    #     label='Scattering angle:' + ' ' + str(scattering_angle[2]) + '$\degree$'
-    # )
-
     x, y = dipolar_limit(np.linspace(2_000, 10_000, 100))
 
     parameters_count = (
@@ -93,9 +80,9 @@ def save_results(
     plot_geometry(g_optimized, from_top=False, save_to=path / 'optimized_geometry.pdf')
 
     with open(f'{path}/scat_data.txt', "w+") as file:
-            file.write('frequency' + '\t' + 'scaterring_' + str(optimization_hyperparams['scattering_angle']) + '\n')
+            file.write('frequency' + '\t' + 'scaterring_' + str(optimization_hyperparams['scattering_angle'][0]) + '\n')
             for i in range(len(scatter[0])):
-                file.write(str(scatter[0][i]) + '\n')
+                file.write(str(scatter[0][i]) + '\t' + str(scatter[1][i]) + '\n')
 
     with open(f'{path}/parametrization_hyperparams.json', 'w+') as fp:
         json.dump(param_hyperparams, fp)
