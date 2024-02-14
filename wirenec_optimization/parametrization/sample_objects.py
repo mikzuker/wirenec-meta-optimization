@@ -29,35 +29,11 @@ class WireParametrization(BaseObjectParametrization):
             radius=wire_radius, kind=self.object_type)])
         g.rotate(*orientation)
         return g
-
-
-# class SSRRParametrization(BaseObjectParametrization):
-#     def __init__(self, max_size: float = 3.25 * 1e-3, min_size: float = 9 * 1e-3):
-#         super().__init__("SSRR", max_size, min_size)
-#
-#     def get_geometry(self, size_ratio, orientation, wire_radius: float = 0.5 * 1e-4):
-#         length = self.min_size + (self.max_size - self.min_size) * size_ratio
-#         gap = (length) / 2
-#         dist = (length) / 8
-#       g = Geometry([Wire((gap / 2, length / 2, 0.), (length / 2, length / 2, 0.), wire_radius),
-#                       Wire((length / 2, length / 2, 0.), (length / 2, -length / 2, 0.), wire_radius),
-#                       Wire((length / 2, -length / 2, 0.), (-length / 2, -length / 2, 0.), wire_radius),
-#                       Wire((-length / 2, -length / 2, 0.), (-length / 2, length / 2, 0.), wire_radius),
-#                       Wire((-length / 2, length / 2, 0.), (-gap / 2, length / 2, 0.), wire_radius),
-#
-#                       Wire((length / 2 - dist, length / 2 - dist, 0.), (length / 2 - dist, - length / 2 + dist, 0.),
-#                            wire_radius),
-#                       Wire((length / 2 - dist, - length / 2 + dist, 0.), (gap / 2 - dist, -length / 2 + dist, 0.),
-#                            wire_radius),
-#                       Wire((- gap / 2 + dist, -length / 2 + dist, 0.), (-length / 2 + dist, -length / 2 + dist, 0.),
-#                            wire_radius),
-#                       Wire((-length / 2 + dist, -length / 2 + dist, 0.), (-length / 2 + dist, length / 2 - dist, 0.),
-#                            wire_radius),
-#                       Wire((-length / 2 + dist, length / 2 - dist, 0.), (length / 2 - dist, length / 2 - dist, 0.),
-#                            wire_radius)
-#                       ])
-#         g.rotate(*orientation)
-#         return g
+def make_wire(len_obj, height, wire_radius: float = 0.5 * 1e-4):
+    g = Geometry([Wire((0., -len_obj, height),
+                             (0., len_obj, height),
+                             wire_radius)])
+    return g
 
 
 class SSRRParametrization(BaseObjectParametrization):

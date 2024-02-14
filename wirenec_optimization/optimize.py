@@ -15,6 +15,8 @@ from wirenec_optimization.optimization_utils.visualization import plot_geometry
 from wirenec_optimization.optimization_utils.hyperparams import parametrization_hyperparams, optimization_hyperparams, \
     scattering_hyperparams, object_hyperparams
 
+from wirenec_optimization.parametrization.sample_objects import make_wire
+
 
 def dipolar_limit(freq):
     c = 299_792_458
@@ -56,10 +58,13 @@ def save_results(
 
     scatter = scattering_plot(
         ax[0], g_optimized, theta=scat_hyperparams['theta'], eta=scat_hyperparams['eta'], num_points=100,
-        scattering_phi_angle=optimization_hyperparams['scattering_angle'][0], plt_sp=True,
+        scattering_phi_angle=optimization_hyperparams['scattering_angle'][0],
         label='Scattering angle:' + ' ' + str(optimization_hyperparams['scattering_angle'][0]) + '$\degree$'
     )
-    x, y = dipolar_limit(np.linspace(2_000, 10_000, 100))
+    scatter_initial = scattering_plot(ax[0], make_wire(object_hyperparams['obj_length'], object_hyperparams['dist_from_obj_to_surf']),
+        theta=scat_hyperparams['theta'], eta=scat_hyperparams['eta'], num_points=100,
+        scattering_phi_angle=optimization_hyperparams['scattering_angle'][0],
+        label='initial object:' + ' ' + str(object_hyperparams['type']))
 
     parameters_count = (
         int(len(optimized_dict['params']) / 5)  # two more parameters for deltas
@@ -80,9 +85,9 @@ def save_results(
     plot_geometry(g_optimized, from_top=False, save_to=path / 'optimized_geometry.pdf')
 
     with open(f'{path}/scat_data.txt', "w+") as file:
-            file.write('frequency' + '\t' + 'scaterring_' + str(optimization_hyperparams['scattering_angle'][0]) + '\n')
+            file.write('frequency' + '\t' + 'scaterring_' + str(optimization_hyperparams['scattering_angle'][0]) + '\t' + 'initial' + '\n')
             for i in range(len(scatter[0])):
-                file.write(str(scatter[0][i]) + '\t' + str(scatter[1][i]) + '\n')
+                file.write(str(scatter[0][i]) + '\t' + str(scatter[1][i]) + '\t' + str(scatter_initial[1][i]) + '\n')
 
     with open(f'{path}/parametrization_hyperparams.json', 'w+') as fp:
         json.dump(param_hyperparams, fp)

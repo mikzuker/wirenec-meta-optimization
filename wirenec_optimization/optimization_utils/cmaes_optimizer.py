@@ -14,6 +14,8 @@ from wirenec.geometry import Wire, Geometry
 from wirenec_optimization.optimization_utils.hyperparams import parametrization_hyperparams, optimization_hyperparams, \
     scattering_hyperparams, object_hyperparams
 
+from wirenec_optimization.parametrization.sample_objects import make_wire
+
 def create_wire_bundle_geometry(lengths, tau):
     m, n = lengths.shape
 
@@ -32,14 +34,9 @@ def objective_function(
         freq: [list, tuple, np.ndarray] = tuple([9000, 1000]),
         geometry: bool = False, scattering_angle: tuple = (90)
 ):
-    length = object_hyperparams['obj_length']
-    wire_radius = object_hyperparams['wire_radius']
-    height = object_hyperparams['dist_from_obj_to_surf']
-    unmov_g = Geometry([Wire((0., -length, height),
-                       (0., length, height),
-                        wire_radius)])
+    unmoving_g = make_wire(object_hyperparams['obj_length'], object_hyperparams['dist_from_obj_to_surf'])
     g = parametrization.get_geometry(params=params)
-    g.wires.extend(unmov_g.wires)
+    g.wires.extend(unmoving_g.wires)
     scat_on_freq = []
     if not geometry:
         for angle in scattering_angle:
