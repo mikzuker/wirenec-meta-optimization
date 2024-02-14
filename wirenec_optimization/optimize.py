@@ -58,13 +58,13 @@ def save_results(
 
     scatter = scattering_plot(
         ax[0], g_optimized, theta=scat_hyperparams['theta'], eta=scat_hyperparams['eta'], num_points=100,
-        scattering_phi_angle=optimization_hyperparams['scattering_angle'][0],
+        scattering_phi_angle=optimization_hyperparams['scattering_angle'][0], color="firebrick", lw=2,
         label='Scattering angle:' + ' ' + str(optimization_hyperparams['scattering_angle'][0]) + '$\degree$'
     )
     scatter_initial = scattering_plot(ax[0], make_wire(object_hyperparams['obj_length'], object_hyperparams['dist_from_obj_to_surf']),
         theta=scat_hyperparams['theta'], eta=scat_hyperparams['eta'], num_points=100,
-        scattering_phi_angle=optimization_hyperparams['scattering_angle'][0],
-        label='initial object:' + ' ' + str(object_hyperparams['type']))
+        scattering_phi_angle=optimization_hyperparams['scattering_angle'][0], color="olive", lw=2, ls=(5, (5, 5)),
+        label='Initial object:' + ' ' + str(object_hyperparams['type']))
 
     parameters_count = (
         int(len(optimized_dict['params']) / 5)  # two more parameters for deltas
@@ -73,15 +73,20 @@ def save_results(
     )
     # ax[0].plot(x, np.array(y) * parameters_count, color='b', linestyle='--', label=f'{parameters_count} Bound')
     # ax[0].plot(x, np.array(y), color='k', linestyle='--', label=f'Single dipole bound')
-
-    ax[0].set_xlim(2_000, 10_000)
+    ax[0].set_xlim(4_000, 10_000)
+    ax[0].set_ylim(-max(scatter[1]) * 0.05, max(scatter[1]) *1.1)
+    ax[0].axhline(0, color="k", lw=1)
+    ax[0].scatter(optimization_hyperparams['frequencies'], [0] * len(optimization_hyperparams['frequencies']),
+                  color="darkgreen", marker="s", alpha=0.5, label='Optimized frequencies')
+    ax[0].fill_between(optimization_hyperparams['frequencies'], 0, max(scatter[1]) * 1.1,
+        color="darkgreen", alpha=0.1, label="Optimized area")
+    ax[0].legend()
 
     ax[1].plot(optimized_dict['progress'], marker='.', linestyle=':')
-    ax[0].legend()
 
     fig.savefig(path / 'scattering_progress.pdf', dpi=200, bbox_inches='tight')
     plt.show()
-
+    print(min(optimization_hyperparams['frequencies']), max(optimization_hyperparams['frequencies']))
     plot_geometry(g_optimized, from_top=False, save_to=path / 'optimized_geometry.pdf')
 
     with open(f'{path}/scat_data.txt', "w+") as file:
