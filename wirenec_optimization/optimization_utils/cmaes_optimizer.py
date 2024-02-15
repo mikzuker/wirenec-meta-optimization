@@ -28,13 +28,13 @@ def create_wire_bundle_geometry(lengths, tau):
             wires.append(Wire(p1, p2))
     return Geometry(wires)
 
+unmoving_g = make_wire(object_hyperparams['obj_length'], object_hyperparams['dist_from_obj_to_surf'])
 def objective_function(
         parametrization: BaseStructureParametrization,
         params: np.ndarray,
         freq: [list, tuple, np.ndarray] = tuple([9000, 1000]),
         geometry: bool = False, scattering_angle: tuple = (90)
 ):
-    unmoving_g = make_wire(object_hyperparams['obj_length'], object_hyperparams['dist_from_obj_to_surf'])
     g = parametrization.get_geometry(params=params)
     g.wires.extend(unmoving_g.wires)
     scat_on_freq = []

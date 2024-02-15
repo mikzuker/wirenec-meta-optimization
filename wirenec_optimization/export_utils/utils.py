@@ -28,7 +28,7 @@ def vba_wire(p1, p2, wire_radius, name):
     return s
 
 
-def get_macros(g, history=False):
+def get_macros(g, history=True):
     s = ''
     for i, wire in enumerate(g.wires):
         p1, p2 = wire.p1 * 1e3, wire.p2 * 1e3

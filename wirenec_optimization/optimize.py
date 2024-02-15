@@ -8,7 +8,7 @@ from wirenec.scattering import get_scattering_in_frequency_range
 from wirenec.visualization import scattering_plot  # , plot_geometry
 
 from export_utils.utils import get_macros
-from optimization_utils.cmaes_optimizer import cma_optimizer, objective_function
+from optimization_utils.cmaes_optimizer import cma_optimizer, objective_function, unmoving_g
 from parametrization.layers_parametrization import LayersParametrization
 from wirenec_optimization.optimization_utils.visualization import plot_geometry
 
@@ -55,6 +55,8 @@ def save_results(
     fig, ax = plt.subplots(2, figsize=(6, 8))
 
     g_optimized = objective_function(parametrization, params=optimized_dict['params'], geometry=True)
+    test_obj = unmoving_g
+    opt_structure = Geometry(g_optimized.wires[:-len(test_obj.wires)])
 
     scatter = scattering_plot(
         ax[0], g_optimized, theta=scat_hyperparams['theta'], eta=scat_hyperparams['eta'], num_points=100,
@@ -71,22 +73,20 @@ def save_results(
         if param_hyperparams["asymmetry_factor"] is not None
         else int(len(optimized_dict['params']) / 3)
     )
-    # ax[0].plot(x, np.array(y) * parameters_count, color='b', linestyle='--', label=f'{parameters_count} Bound')
-    # ax[0].plot(x, np.array(y), color='k', linestyle='--', label=f'Single dipole bound')
+
     ax[0].set_xlim(4_000, 10_000)
     ax[0].set_ylim(-max(scatter[1]) * 0.05, max(scatter[1]) *1.1)
     ax[0].axhline(0, color="k", lw=1)
     ax[0].scatter(optimization_hyperparams['frequencies'], [0] * len(optimization_hyperparams['frequencies']),
                   color="darkgreen", marker="s", alpha=0.5, label='Optimized frequencies')
-    ax[0].fill_between(optimization_hyperparams['frequencies'], 0, max(scatter[1]) * 1.1,
-        color="darkgreen", alpha=0.1, label="Optimized area")
+    ax[0].fill_between(optimization_hyperparams['frequencies'], 0, max(scatter[1]) * 1.1, color="darkgreen", alpha=0.1, label="Optimized area")
     ax[0].legend()
 
     ax[1].plot(optimized_dict['progress'], marker='.', linestyle=':')
 
     fig.savefig(path / 'scattering_progress.pdf', dpi=200, bbox_inches='tight')
     plt.show()
-    print(min(optimization_hyperparams['frequencies']), max(optimization_hyperparams['frequencies']))
+
     plot_geometry(g_optimized, from_top=False, save_to=path / 'optimized_geometry.pdf')
 
     with open(f'{path}/scat_data.txt', "w+") as file:
@@ -107,7 +107,11 @@ def save_results(
         json.dump(optimized_dict, fp)
     with open(f'{path}/progress.npy', 'wb') as fp:
         np.save(fp, np.array(optimized_dict['progress']))
-    with open(f'{path}/macros.txt', 'w+') as fp:
+    with open(f'{path}/obj_macros.txt', 'w+') as fp:
+        fp.write(get_macros(test_obj))
+    with open(f'{path}/opt_without_obj_macros.txt', 'w+') as fp:
+        fp.write(get_macros(opt_structure))
+    with open(f'{path}/opt_with_obj_macros.txt', 'w+') as fp:
         fp.write(get_macros(g_optimized))
 
 
