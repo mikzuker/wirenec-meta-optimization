@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+import os
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -52,6 +53,12 @@ def save_results(
 
     path.mkdir(parents=True, exist_ok=True)
 
+    path_hyperparams = Path(f'{path}/hyperparams')
+    path_macros = Path(f'{path}/macros')
+
+    path_hyperparams.mkdir(parents=True, exist_ok=True)
+    path_macros.mkdir(parents=True, exist_ok=True)
+
     fig, ax = plt.subplots(2, figsize=(6, 8))
 
     g_optimized = objective_function(parametrization, params=optimized_dict['params'], geometry=True)
@@ -94,24 +101,24 @@ def save_results(
             for i in range(len(scatter[0])):
                 file.write(str(scatter[0][i]) + '\t' + str(scatter[1][i]) + '\t' + str(scatter_initial[1][i]) + '\n')
 
-    with open(f'{path}/parametrization_hyperparams.json', 'w+') as fp:
+    with open(f'{path_hyperparams}/parametrization_hyperparams.json', 'w+') as fp:
         json.dump(param_hyperparams, fp)
-    with open(f'{path}/optimization_hyperparams.json', 'w+') as fp:
+    with open(f'{path_hyperparams}/optimization_hyperparams.json', 'w+') as fp:
         json.dump(opt_hyperparams, fp)
-    with open(f'{path}/scattering_hyperparams.json', 'w+') as fp:
+    with open(f'{path_hyperparams}/scattering_hyperparams.json', 'w+') as fp:
         json.dump(scat_hyperparams, fp)
-    with open(f'{path}/object_hyperparams.json', 'w+') as fp:
+    with open(f'{path_hyperparams}/object_hyperparams.json', 'w+') as fp:
         json.dump(object_hyperparams, fp)
-    with open(f'{path}/optimized_params.json', 'w+') as fp:
+    with open(f'{path_hyperparams}/optimized_params.json', 'w+') as fp:
         optimized_dict['params'] = optimized_dict['params'].tolist()
         json.dump(optimized_dict, fp)
     with open(f'{path}/progress.npy', 'wb') as fp:
         np.save(fp, np.array(optimized_dict['progress']))
-    with open(f'{path}/obj_macros.txt', 'w+') as fp:
+    with open(f'{path_macros}/obj_macros.txt', 'w+') as fp:
         fp.write(get_macros(test_obj))
-    with open(f'{path}/opt_without_obj_macros.txt', 'w+') as fp:
+    with open(f'{path_macros}/opt_without_obj_macros.txt', 'w+') as fp:
         fp.write(get_macros(opt_structure))
-    with open(f'{path}/opt_with_obj_macros.txt', 'w+') as fp:
+    with open(f'{path_macros}/opt_with_obj_macros.txt', 'w+') as fp:
         fp.write(get_macros(g_optimized))
 
 

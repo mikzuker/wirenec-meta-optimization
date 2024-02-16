@@ -2,23 +2,17 @@ import numpy as np
 
 
 def freq_maker(general_freq: float, band_width: float):
-    frequencies = []
-    number_freq = 4
-    half_freq_1 = np.arange(general_freq, general_freq + 3*band_width/4, band_width/number_freq)
-    half_freq_2 = np.arange(general_freq - band_width / 2, general_freq, band_width/number_freq)
-    half_freq_2 = list(half_freq_2)
-    half_freq_1 = list(half_freq_1)
-    frequencies = half_freq_2 + half_freq_1
-    frequencies = [round(num) for num in frequencies]
+    number_freq = 5
+    frequencies = np.linspace(general_freq - band_width / 2, general_freq + band_width / 2, number_freq, endpoint=True)
     return frequencies
 
 
 parametrization_hyperparams = {
-        'matrix_size': (3, 3),
-        'layers_num': 1,
-        'tau': 20 * 1e-3,
-        'delta': 10 * 1e-3,
-        'asymmetry_factor': None
+    'matrix_size': (3, 3),
+    'layers_num': 1,
+    'tau': 20 * 1e-3,
+    'delta': 10 * 1e-3,
+    'asymmetry_factor': None
 }
 
 scattering_hyperparams = {
