@@ -1,0 +1,27 @@
+parametrization_name: layers
+parametrization_class: diffuser
+
+parametrization_hyperparams:
+  matrix_size: [3, 3]
+  layers_num: 1
+  tau: 20e-3
+  delta: 10e-3
+  asymmetry_factor: null
+
+optimization_hyperparams:
+  seed: 42
+  iterations: 2
+  bandwidth: 1000
+  frequencies: []
+  scattering_angle: [180, ]
+
+scattering_hyperparams:
+  theta: 180
+  eta: 0
+  phi: 90
+
+object_hyperparams:
+  type: wire
+  obj_length: 1e-2
+  dist_from_obj_to_surf: 3e-2
+  wire_radius: 0.5e-4

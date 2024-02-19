@@ -159,4 +159,5 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
 wirenec_optimization/data/optimization/*
+wirenec_optimization/data/bandwidth_optimization/*
 wirenec_optimization/data/*.txt
