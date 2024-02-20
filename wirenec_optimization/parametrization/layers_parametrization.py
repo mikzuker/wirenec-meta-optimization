@@ -76,8 +76,6 @@ class LayersParametrization(BaseStructureParametrization):
                     orientation = (orientation, 0, 0)
                     g_tmp = self.type_mapping[tp]().get_geometry(size_ratio, orientation)
                     if self.asymmetry_factor:
-                        print(type(self.asymmetry_factor))
-
                         phi_rel, dr_rel = delta_params[l].reshape((m, n, 2))[i, j]
                         obj_size_max = get_geometry_dimensions(g_tmp)
                         phi, dr = phi_rel * 2 * np.pi, (self.tau - obj_size_max) / 2 * self.asymmetry_factor * dr_rel

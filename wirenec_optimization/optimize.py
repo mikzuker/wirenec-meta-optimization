@@ -123,7 +123,7 @@ def save_results(
     )
 
     ax[0].set_xlim(4_000, 10_000)
-    ax[0].set_ylim(-max(scatter[1]) * 0.05, max(scatter[1]) * 1.1)
+    ax[0].set_ylim(-max(scatter_initial[1]) * 0.05, max(scatter_initial[1]) * 1.1)
     ax[0].axhline(0, color="k", lw=1)
     ax[0].scatter(
         optimization_hyperparams["frequencies"],
@@ -136,7 +136,7 @@ def save_results(
     ax[0].fill_between(
         optimization_hyperparams["frequencies"],
         0,
-        max(scatter[1]) * 1.1,
+        max(scatter_initial[1]) * 1.1,
         color="darkgreen",
         alpha=0.1,
         label="Optimized area",
