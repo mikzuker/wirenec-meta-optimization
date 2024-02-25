@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import pickle
+from wirenec.geometry import Geometry, Wire
 
 df_opt = pd.read_csv(r"C:\Users\mikzu\Downloads\Wire_1e3_Opt.txt", sep='\t', encoding='utf-8')
 df_base = pd.read_csv(r"C:\Users\mikzu\Downloads\Wire_non_opt.txt", sep='\t', encoding='utf-8')
@@ -14,3 +16,4 @@ plt.ylabel(('Backward Scattering, $m^2$'))
 plt.legend()
 plt.xlim(2000, 10000)
 plt.show()
+

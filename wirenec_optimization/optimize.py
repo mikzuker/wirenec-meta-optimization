@@ -1,4 +1,6 @@
 import json
+import yaml
+import pickle
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -6,7 +8,7 @@ import numpy as np
 from omegaconf import DictConfig, OmegaConf
 from wirenec.geometry import Geometry, Wire
 from wirenec.scattering import get_scattering_in_frequency_range
-from wirenec.visualization import scattering_plot  # , plot_geometry
+from wirenec.visualization import scattering_plot
 
 from export_utils.utils import get_macros
 from optimization_utils.cmaes_optimizer import (
@@ -16,7 +18,7 @@ from optimization_utils.cmaes_optimizer import (
 )
 from parametrization.layers_parametrization import LayersParametrization
 from wirenec_optimization.optimization_configs.utils import parse_config
-from wirenec_optimization.optimization_utils.hyperparams import (
+from wirenec_optimization.optimization_utils.bandwidth_creating import (
     freq_maker,
 )
 from wirenec_optimization.optimization_utils.visualization import plot_geometry
@@ -73,14 +75,16 @@ def save_results(
 
     path_hyperparams = Path(f"{path}/hyperparams")
     path_macros = Path(f"{path}/macros")
+    path_vectors = Path(f"{path}/vectors")
 
     path_hyperparams.mkdir(parents=True, exist_ok=True)
     path_macros.mkdir(parents=True, exist_ok=True)
+    path_vectors.mkdir(parents=True, exist_ok=True)
 
     fig, ax = plt.subplots(2, figsize=(6, 8))
 
     g_optimized = objective_function(
-        parametrization, params=optimized_dict["params"], geometry=True
+        parametrization, params=optimized_dict["params"], object_params=config.object_hyperparams, geometry=True
     )
 
     test_obj = get_reference_object(config.object_hyperparams)
@@ -189,6 +193,12 @@ def save_results(
         fp.write(get_macros(opt_structure))
     with open(f"{path_macros}/opt_with_obj_macros.txt", "w+") as fp:
         fp.write(get_macros(g_optimized))
+    with open(f"{path_vectors}/test_object.pkl", 'wb') as handle:
+        pickle.dump(test_obj.wires, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    with open(f"{path_vectors}/optimized_structure.pkl", 'wb') as handle:
+        pickle.dump(opt_structure.wires, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    with open(f"{path_vectors}/opt_structure_with_object.pkl", 'wb') as handle:
+        pickle.dump(g_optimized.wires, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 if __name__ == "__main__":

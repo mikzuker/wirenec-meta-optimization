@@ -1,7 +1,6 @@
 from pathlib import Path
 from omegaconf import DictConfig, OmegaConf
 
-from wirenec_optimization.optimization_utils.hyperparams import freq_maker
 
 
 def parse_config(config_path: Path, divide: bool = False) -> DictConfig | tuple[DictConfig, ...]:

@@ -14,12 +14,6 @@ from wirenec_optimization.parametrization.base_parametrization import (
 
 from wirenec.geometry import Wire, Geometry
 
-# from wirenec_optimization.optimization_utils.hyperparams import (
-#     parametrization_hyperparams,
-#     optimization_hyperparams,
-#     scattering_hyperparams,
-#     object_hyperparams,
-# )
 
 from wirenec_optimization.parametrization.sample_objects import make_wire
 
@@ -148,10 +142,6 @@ def cma_optimizer(
                 max_value = value
                 max_params = params
                 cnt += 1
-            # if abs(value) < abs(max_value):
-            #     max_value = abs(value)
-            #     max_params = params
-            #     cnt += 1
 
             solutions.append((params, value))
 
