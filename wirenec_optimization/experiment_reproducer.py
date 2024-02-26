@@ -16,20 +16,24 @@ from wirenec_optimization.parametrization.base_parametrization import (
 
 from typing import Optional
 
+# def dir_checker():
+#     folder_path = Path('data/reproduced_experiments')
+#     # if folder_path.exists() and folder_path.is_dir():
+#     #     None
+#     #     print('Exist')
+#     # else:
+#     folder_path.mkdir(parents=True, exist_ok=True)
+#     # print('Was made')
 
-# If save=True -> then save, If not -> not save
 
 def reproduce_experiment(config: DictConfig,
                          optimized_dict: dict,
                          test_obj: Geometry,
                          opt_structure: Optional[Geometry] = None,
                          ):
-    parametrization: BaseStructureParametrization
-    path: str = "data/experiment_reproduces/"
 
-    parametrization_hyperparams = OmegaConf.to_container(
-        config.parametrization_hyperparams, resolve=True
-    )
+    parametrization: BaseStructureParametrization
+
     optimization_hyperparams = OmegaConf.to_container(
         config.optimization_hyperparams, resolve=True
     )
@@ -38,12 +42,16 @@ def reproduce_experiment(config: DictConfig,
     )
     object_hyperparams = OmegaConf.to_container(config.object_hyperparams, resolve=True)
 
+    folder_path: str = 'data/reproduced_experiments'
+    folder_path = Path(folder_path)
+    folder_path.mkdir(parents=True, exist_ok=True)
+
     g_optimized = Geometry(opt_structure + test_obj)
     test_obj = Geometry(test_obj)
 
     fig, ax = plt.subplots(2, figsize=(6, 8))
 
-    scattering_plot(
+    scatter = scattering_plot(
         ax[0],
         g_optimized,
         theta=scattering_hyperparams["theta"],
@@ -96,6 +104,26 @@ def reproduce_experiment(config: DictConfig,
     plt.show()
 
     plot_geometry(g_optimized, from_top=False)
+
+    with open(f"{folder_path}/scat_data_{object_hyperparams['type']}_{optimization_hyperparams['bandwidth']}_{optimization_hyperparams['seed']}.txt", "w+") as file:
+        file.write(
+            "frequency"
+            + "\t"
+            + "scaterring_"
+            + str(optimization_hyperparams["scattering_angle"][0])
+            + "\t"
+            + "initial"
+            + "\n"
+        )
+        for i in range(len(scatter[0])):
+            file.write(
+                str(scatter[0][i])
+                + "\t"
+                + str(scatter[1][i])
+                + "\t"
+                + str(scatter_initial[1][i])
+                + "\n"
+            )
 
 
 if __name__ == '__main__':
