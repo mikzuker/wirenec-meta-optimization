@@ -26,7 +26,9 @@ from typing import Optional
 #     # print('Was made')
 
 
-def reproduce_experiment(config: DictConfig,
+def reproduce_experiment(optimization_hyperparams: dict,
+                         scattering_hyperparams: dict,
+                         object_hyperparams: dict,
                          optimized_dict: dict,
                          test_obj: Geometry,
                          opt_structure: Optional[Geometry] = None,
@@ -34,13 +36,6 @@ def reproduce_experiment(config: DictConfig,
 
     parametrization: BaseStructureParametrization
 
-    optimization_hyperparams = OmegaConf.to_container(
-        config.optimization_hyperparams, resolve=True
-    )
-    scattering_hyperparams = OmegaConf.to_container(
-        config.scattering_hyperparams, resolve=True
-    )
-    object_hyperparams = OmegaConf.to_container(config.object_hyperparams, resolve=True)
 
     folder_path: str = 'data/reproduced_experiments'
     folder_path = Path(folder_path)
@@ -133,8 +128,11 @@ if __name__ == '__main__':
         opt_structure = pickle.load(handle)
     with open(r'C:\Users\mikzu\PYCHAR~1\WIRENE~2\WIRENE~1\data\BANDWI~1\LAYERS~1.0__\HYPERP~1\optimized_params.json', 'rb') as fp:
         optimized_dict = json.load(fp)
+    with open(r'C:\Users\mikzu\PYCHAR~1\WIRENE~2\WIRENE~1\data\BANDWI~1\LAYERS~1.0__\HYPERP~1\optimization_hyperparams.json', 'rb') as fp:
+        optimization_hyperparams = json.load(fp)
+    with open(r'C:\Users\mikzu\PYCHAR~1\WIRENE~2\WIRENE~1\data\BANDWI~1\LAYERS~1.0__\HYPERP~1\scattering_hyperparams.json', 'rb') as fp:
+        scattering_hyperparams = json.load(fp)
+    with open(r'C:\Users\mikzu\PYCHAR~1\WIRENE~2\WIRENE~1\data\BANDWI~1\LAYERS~1.0__\HYPERP~1\object_hyperparams.json', 'rb') as fp:
+        object_hyperparams = json.load(fp)
 
-    config_path: Path = Path("optimization_configs/single_layer_config.yaml")
-    config = parse_config(config_path)
-
-    reproduce_experiment(config, optimized_dict, test_object, opt_structure)
+    reproduce_experiment(optimization_hyperparams, scattering_hyperparams, object_hyperparams, optimized_dict, test_object, opt_structure)
