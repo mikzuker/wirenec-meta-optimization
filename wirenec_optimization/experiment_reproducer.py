@@ -1,6 +1,8 @@
 import json
 import pickle
 from pathlib import Path
+import pandas as pd
+import sklearn.metrics
 
 import matplotlib.pyplot as plt
 from omegaconf import DictConfig, OmegaConf
@@ -100,7 +102,7 @@ def reproduce_experiment(optimization_hyperparams: dict,
 
     plot_geometry(g_optimized, from_top=False)
 
-    with open(f"{folder_path}/scat_data_{object_hyperparams['type']}_{optimization_hyperparams['bandwidth']}_{optimization_hyperparams['seed']}.txt", "w+") as file:
+    with open(f"{folder_path}/scat_data_{object_hyperparams['type']}_{optimization_hyperparams['bandwidth']}_{optimization_hyperparams['seed']}.csv", "w+") as file:
         file.write(
             "frequency"
             + "\t"
@@ -119,20 +121,78 @@ def reproduce_experiment(optimization_hyperparams: dict,
                 + str(scatter_initial[1][i])
                 + "\n"
             )
+def metric_maker(scattering_data):
+    seed = optimization_hyperparams['seed']
+    bandwidth = optimization_hyperparams['bandwidth']
 
+    max_value = scattering_data['scaterring_180'].max()
+    min_value = scattering_data['scaterring_180'].min()
+    mean_value = scattering_data['scaterring_180'].mean()
+    std_value = scattering_data['scaterring_180'].std()
+
+    min_freq = min(optimization_hyperparams['frequencies'])
+    max_freq = max(optimization_hyperparams['frequencies'])
+    mae_data = []
+
+    for i in range(scattering_data['scaterring_180'].count()):
+        if min_freq <= scattering_data['frequency'][i] <= max_freq:
+            mae_data.append((scattering_data['frequency'][i], i))
+    min_line_number = mae_data[0][1]
+    max_line_number = mae_data[-1][1]
+    mae_value = sklearn.metrics.mean_absolute_error(scattering_data['scaterring_180'][min_line_number:max_line_number], scattering_data['initial'][min_line_number:max_line_number])
+
+    with open(r'data\metrics_aggregation.txt', 'a') as fp:
+        # head = fp.readlines()
+        # if head[0] == str('max_value'):
+        #     None
+        # else:
+        #     fp.write(
+        #         'max_value'
+        #         + "\t"
+        #           'min_value'
+        #         + "\t"
+        #           'mean_value'
+        #         + "\t"
+        #           'std_value'
+        #         + "\t"
+        #           'mae_value'
+        #         + "\t"
+        #           'seed'
+        #         + "\t"
+        #           'bandwidth'
+        #     )
+        fp.write(
+            str(max_value)
+            + "\t"
+            + str(min_value)
+            + "\t"
+            + str(mean_value)
+            + "\t"
+            + str(std_value)
+            + "\t"
+            + str(mae_value)
+            + "\t"
+            + str(seed)
+            + "\t"
+            + str(bandwidth)
+            + "\n"
+        )
 
 if __name__ == '__main__':
-    with open(r'C:\Users\mikzu\PYCHAR~1\WIRENE~2\WIRENE~1\data\BANDWI~1\LAYERS~1.0__\vectors\test_object.pkl', 'rb') as handle:
+    with open(r'C:\Users\mikzu\Downloads\exp1_10_seeds\6\vectors\test_object.pkl', 'rb') as handle:
         test_object = pickle.load(handle)
-    with open(r'C:\Users\mikzu\PYCHAR~1\WIRENE~2\WIRENE~1\data\BANDWI~1\LAYERS~1.0__\vectors\optimized_structure.pkl', 'rb') as handle:
+    with open(r'C:\Users\mikzu\Downloads\exp1_10_seeds\6\vectors\optimized_structure.pkl', 'rb') as handle:
         opt_structure = pickle.load(handle)
-    with open(r'C:\Users\mikzu\PYCHAR~1\WIRENE~2\WIRENE~1\data\BANDWI~1\LAYERS~1.0__\HYPERP~1\optimized_params.json', 'rb') as fp:
+    with open(r'C:\Users\mikzu\Downloads\exp1_10_seeds\6\hyperparams\optimized_params.json', 'rb') as fp:
         optimized_dict = json.load(fp)
-    with open(r'C:\Users\mikzu\PYCHAR~1\WIRENE~2\WIRENE~1\data\BANDWI~1\LAYERS~1.0__\HYPERP~1\optimization_hyperparams.json', 'rb') as fp:
+    with open(r'C:\Users\mikzu\Downloads\exp1_10_seeds\6\hyperparams\optimization_hyperparams.json', 'rb') as fp:
         optimization_hyperparams = json.load(fp)
-    with open(r'C:\Users\mikzu\PYCHAR~1\WIRENE~2\WIRENE~1\data\BANDWI~1\LAYERS~1.0__\HYPERP~1\scattering_hyperparams.json', 'rb') as fp:
+    with open(r'C:\Users\mikzu\Downloads\exp1_10_seeds\6\hyperparams\scattering_hyperparams.json', 'rb') as fp:
         scattering_hyperparams = json.load(fp)
-    with open(r'C:\Users\mikzu\PYCHAR~1\WIRENE~2\WIRENE~1\data\BANDWI~1\LAYERS~1.0__\HYPERP~1\object_hyperparams.json', 'rb') as fp:
+    with open(r'C:\Users\mikzu\Downloads\exp1_10_seeds\6\hyperparams\object_hyperparams.json', 'rb') as fp:
         object_hyperparams = json.load(fp)
+    with open(r'C:\Users\mikzu\Downloads\exp1_10_seeds\6\scat_data.txt') as fp:
+        scattering_data = pd.read_csv(fp, sep='\t')
 
-    reproduce_experiment(optimization_hyperparams, scattering_hyperparams, object_hyperparams, optimized_dict, test_object, opt_structure)
+    #reproduce_experiment(optimization_hyperparams, scattering_hyperparams, object_hyperparams, optimized_dict, test_object, opt_structure)
+    metric_maker(scattering_data)

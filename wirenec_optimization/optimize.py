@@ -154,8 +154,8 @@ def save_results(
 
     plot_geometry(g_optimized, from_top=False, save_to=path / "optimized_geometry.pdf")
 
-    with open(f"{path}/scat_data.txt", "w+") as file:
-        file.write(
+    with open(f"{path}/scat_data.json", "w+") as fp:
+        fp.write(
             "frequency"
             + "\t"
             + "scaterring_"
@@ -165,7 +165,7 @@ def save_results(
             + "\n"
         )
         for i in range(len(scatter[0])):
-            file.write(
+            fp.write(
                 str(scatter[0][i])
                 + "\t"
                 + str(scatter[1][i])
@@ -208,7 +208,7 @@ if __name__ == "__main__":
     if config.get("parametrization_class") == "diffuser":
         assert config.optimization_hyperparams.bandwidth is not None
         config.optimization_hyperparams.frequencies = tuple(
-            freq_maker(7000, config.optimization_hyperparams.bandwidth)
+            freq_maker(config.optimization_hyperparams.general_frequency, config.optimization_hyperparams.bandwidth)
         )
 
     parametrization = LayersParametrization(**config.get("parametrization_hyperparams"))
