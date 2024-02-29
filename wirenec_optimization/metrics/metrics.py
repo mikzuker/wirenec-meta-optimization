@@ -40,6 +40,11 @@ class SpectrumMetrics(BaseMetric):
         return df[mask]
 
     def meta_pandas_func(self, fun: str) -> Callable:
+        """
+        The method which allows to avoid implementing identical functions,
+        which differs only in the pandas method at the end.
+        For example, df.min(), df.max(), df.mean(), etc.
+        """
         return lambda x: getattr(self.crop_spectrum(x)[self.opt_scattering_col], fun)()
 
     def rmse(self, df: pd.DataFrame) -> float:
