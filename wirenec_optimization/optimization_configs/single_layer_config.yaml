@@ -23,6 +23,6 @@ scattering_hyperparams:
 
 object_hyperparams:
   type: wire
-  obj_length: 1e-2
+  obj_length: 2e-2
   dist_from_obj_to_surf: 20e-2
-  wire_radius: 0.5e-3
+  wire_radius: 5e-4

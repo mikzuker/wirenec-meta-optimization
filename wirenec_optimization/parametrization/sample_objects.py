@@ -30,8 +30,9 @@ class WireParametrization(BaseObjectParametrization):
         g.rotate(*orientation)
         return g
 def make_wire(len_obj, height, wire_radius: float = 0.5 * 1e-4):
-    g = Geometry([Wire((0., -len_obj, height),
-                             (0., len_obj, height),
+    coord_len = len_obj/2
+    g = Geometry([Wire((0., -coord_len, height),
+                             (0., coord_len, height),
                              wire_radius)])
     return g
 
