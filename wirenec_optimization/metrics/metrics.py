@@ -69,6 +69,16 @@ class SpectrumMetrics(BaseMetric):
         )
         return results
 
+# class Visualizer(ABC):
+#     def __init__(self, plot_list: Optional[Iterable[str]] = None):
+#         self.available_plotting = {
+#             "lineplot": self.lineplot,
+#             "boxplot": self.boxplot
+#         }
+#         self.frequencies = 'frequency'
+#         self.bandwidth = ''
+#     def meta_seaborn_func(self, plt: str) -> Callable:
+#         return lambda x: getattr()
 
 if __name__ == "__main__":
     metrics = DummyMetric()

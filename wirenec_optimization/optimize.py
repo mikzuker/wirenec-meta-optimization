@@ -63,12 +63,13 @@ def save_results(
     object_hyperparams = OmegaConf.to_container(config.object_hyperparams, resolve=True)
 
     path += f"{parametrization.structure_name}__"
-    # for param, value in parametrization_hyperparams.items():
-    #     path += f"{param}_{str(value)}__"
-    for param, value in optimization_hyperparams.items():
-        path += f"{param}_{str(value)}__"
-    for param, value in scattering_hyperparams.items():
-        path += f"{param}_{str(value)}__"
+    path += f"{object_hyperparams['type']}__"
+    path += f"{'dist_from_obj_to_surf'}_{str(object_hyperparams['dist_from_obj_to_surf'])}__"
+    path += f"{'general_frequency'}_{str(optimization_hyperparams['general_frequency'])}__"
+    path += f"{'bandwidth'}_{str(optimization_hyperparams['bandwidth'])}__"
+    path += f"{'number_of_frequencies'}_{str(optimization_hyperparams['number_of_frequencies'])}__"
+    path += f"{'seed'}_{str(optimization_hyperparams['seed'])}__"
+
     path = Path(path.rstrip("_"))
 
     path.mkdir(parents=True, exist_ok=True)
