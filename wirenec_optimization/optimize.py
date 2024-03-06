@@ -63,8 +63,8 @@ def save_results(
     object_hyperparams = OmegaConf.to_container(config.object_hyperparams, resolve=True)
 
     path += f"{parametrization.structure_name}__"
-    for param, value in parametrization_hyperparams.items():
-        path += f"{param}_{str(value)}__"
+    # for param, value in parametrization_hyperparams.items():
+    #     path += f"{param}_{str(value)}__"
     for param, value in optimization_hyperparams.items():
         path += f"{param}_{str(value)}__"
     for param, value in scattering_hyperparams.items():
@@ -208,7 +208,7 @@ if __name__ == "__main__":
     if config.get("parametrization_class") == "diffuser":
         assert config.optimization_hyperparams.bandwidth is not None
         config.optimization_hyperparams.frequencies = tuple(
-            freq_maker(config.optimization_hyperparams.general_frequency, config.optimization_hyperparams.bandwidth)
+            freq_maker(config.optimization_hyperparams.general_frequency, config.optimization_hyperparams.bandwidth, config.optimization_hyperparams.number_of_frequencies)
         )
 
     parametrization = LayersParametrization(**config.get("parametrization_hyperparams"))
