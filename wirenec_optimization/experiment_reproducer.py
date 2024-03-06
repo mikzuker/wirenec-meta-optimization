@@ -179,20 +179,22 @@ def metric_maker(scattering_data):
         )
 
 if __name__ == '__main__':
-    with open(r'C:\Users\mikzu\Downloads\exp1_10_seeds\6\vectors\test_object.pkl', 'rb') as handle:
+    data_path = Path("data/bandwidth_optimization/layers__wire__dist_from_obj_to_surf_0.2__general_frequency_7000__bandwidth_1000__number_of_frequencies_5__seed_42")
+
+    with open(data_path / 'vectors/test_object.pkl', 'rb') as handle:
         test_object = pickle.load(handle)
-    with open(r'C:\Users\mikzu\Downloads\exp1_10_seeds\6\vectors\optimized_structure.pkl', 'rb') as handle:
+    with open(data_path / 'vectors/optimized_structure.pkl', 'rb') as handle:
         opt_structure = pickle.load(handle)
-    with open(r'C:\Users\mikzu\Downloads\exp1_10_seeds\6\hyperparams\optimized_params.json', 'rb') as fp:
+    with open(data_path / 'hyperparams/optimized_params.json', 'rb') as fp:
         optimized_dict = json.load(fp)
-    with open(r'C:\Users\mikzu\Downloads\exp1_10_seeds\6\hyperparams\optimization_hyperparams.json', 'rb') as fp:
+    with open(data_path / 'hyperparams/optimization_hyperparams.json', 'rb') as fp:
         optimization_hyperparams = json.load(fp)
-    with open(r'C:\Users\mikzu\Downloads\exp1_10_seeds\6\hyperparams\scattering_hyperparams.json', 'rb') as fp:
+    with open(data_path / 'hyperparams/scattering_hyperparams.json', 'rb') as fp:
         scattering_hyperparams = json.load(fp)
-    with open(r'C:\Users\mikzu\Downloads\exp1_10_seeds\6\hyperparams\object_hyperparams.json', 'rb') as fp:
+    with open(data_path / 'hyperparams/object_hyperparams.json', 'rb') as fp:
         object_hyperparams = json.load(fp)
-    with open(r'C:\Users\mikzu\Downloads\exp1_10_seeds\6\scat_data.txt') as fp:
+    with open(data_path / 'scat_data.json') as fp:
         scattering_data = pd.read_csv(fp, sep='\t')
 
-    #reproduce_experiment(optimization_hyperparams, scattering_hyperparams, object_hyperparams, optimized_dict, test_object, opt_structure)
-    metric_maker(scattering_data)
+    reproduce_experiment(optimization_hyperparams, scattering_hyperparams, object_hyperparams, optimized_dict, test_object, opt_structure)
+    # metric_maker(scattering_data)
