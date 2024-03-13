@@ -80,7 +80,7 @@ class SpectrumMetrics(BaseMetric):
 
 class Visualizer(ABC):
     def __init__(self):
-        self.available_plotting = ["lineplot", "boxplot", "scatter3d"]
+        self.available_plotting = ["lineplot", "boxplot", "scatter3d", "scatterplot_with_gradient"]
 
     def show_plots(self):
         print(self.available_plotting)
@@ -90,17 +90,25 @@ class Visualizer(ABC):
                           x_data_column: str,
                           plt_type: str,
                           z_data_column: Optional[str] = None,
+                          hue_data_column: Optional[str] = None,
                           ):
         if plt_type in self.available_plotting:
             with (folder_path / "aggregated_metrics.csv").open("rb") as file:
                 data = pd.read_csv(file)
             directory = str(folder_path)
+
             if plt_type == 'boxplot':
                 plot_data = sns.boxplot(data, y=y_data_column, x=x_data_column)
                 plt.title('Metrics aggregation')
                 plt.show()
+
             if plt_type == 'lineplot':
                 plot_data = sns.lineplot(data, y=y_data_column, x=x_data_column)
+                plt.title('Metrics aggregation')
+                plt.show()
+
+            if plt_type == 'scatterplot_with_gradient':
+                plot_data = sns.scatterplot(data, y=y_data_column, x=x_data_column, hue=hue_data_column)
                 plt.title('Metrics aggregation')
                 plt.show()
 

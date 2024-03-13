@@ -35,7 +35,7 @@ def process_folder(folder_path: Path) -> pd.Series:
 if __name__ == "__main__":
     root_dir = Path.cwd()
     experiments_folder = root_dir / "data/bandwidth_optimization/"
-
+    
     folders = [x for x in experiments_folder.iterdir() if x.is_dir()]
 
     df_agg = pd.DataFrame([process_folder(p) for p in folders])
@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
     Plot = Visualizer()
     Plot.visualize_metrics(folder_path=experiments_folder,
-                           z_data_column='mean',
-                           x_data_column='bandwidth',
-                           y_data_column='number_of_freq',
-                           plt_type='scatter3d')
+                           y_data_column='mean',
+                           x_data_column='number_of_freq',
+                           # y_data_column='number_of_freq',
+                           plt_type='boxplot')
