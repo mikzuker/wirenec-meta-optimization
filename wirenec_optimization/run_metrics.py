@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 
-from wirenec_optimization.metrics.metrics import SpectrumMetrics
+from wirenec_optimization.metrics.metrics import SpectrumMetrics, Visualizer
 
 
 def process_folder(folder_path: Path) -> pd.Series:
@@ -33,17 +33,26 @@ def process_folder(folder_path: Path) -> pd.Series:
 
 
 if __name__ == "__main__":
-    root_dir = Path.cwd()
-    experiments_folder = root_dir / "data/bandwidth_optimization/"
+    # root_dir = Path.cwd()
+    # experiments_folder = root_dir / "data/bandwidth_optimization/"
+
+    experiments_folder = Path(r'C:\Users\mikzu\Downloads\big_exp_2')
     folders = [x for x in experiments_folder.iterdir() if x.is_dir()]
 
     df_agg = pd.DataFrame([process_folder(p) for p in folders])
     print(df_agg)
 
     # Plotting results
-    fig, ax = plt.subplots()
-    boxplot = df_agg.boxplot(column=["rmse"])
-    plt.show()
+    # fig, ax = plt.subplots()
+    # boxplot = df_agg.boxplot(column=["rmse"])
+    # plt.show()
 
     # Saving results
     df_agg.to_csv(experiments_folder / "aggregated_metrics.csv")
+
+    Plot = Visualizer()
+    Plot.visualize_metrics(folder_path=experiments_folder,
+                           z_data_column='mean',
+                           x_data_column='bandwidth',
+                           y_data_column='number_of_freq',
+                           plt_type='scatter3d')

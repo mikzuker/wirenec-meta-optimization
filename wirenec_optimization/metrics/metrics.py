@@ -5,6 +5,14 @@ import numpy as np
 import pandas as pd
 import sklearn.metrics
 
+from pathlib import Path
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+from plotly import graph_objs as go
+import plotly.offline as py
+import os
+
 
 class BaseMetric(ABC):
     def calculate(self, **kwargs) -> float | pd.Series:
@@ -69,17 +77,61 @@ class SpectrumMetrics(BaseMetric):
         )
         return results
 
-# class Visualizer(ABC):
-#     def __init__(self, plot_list: Optional[Iterable[str]] = None):
-#         self.available_plotting = {
-#             "lineplot": self.lineplot,
-#             "boxplot": self.boxplot
-#         }
-#         self.frequencies = 'frequency'
-#         self.bandwidth = ''
-#     def meta_seaborn_func(self, plt: str) -> Callable:
-#         return lambda x: getattr()
+
+class Visualizer(ABC):
+    def __init__(self):
+        self.available_plotting = ["lineplot", "boxplot", "scatter3d"]
+
+    def show_plots(self):
+        print(self.available_plotting)
+
+    def visualize_metrics(self, folder_path: Path,
+                          y_data_column: str,
+                          x_data_column: str,
+                          plt_type: str,
+                          z_data_column: Optional[str] = None,
+                          ):
+        if plt_type in self.available_plotting:
+            with (folder_path / "aggregated_metrics.csv").open("rb") as file:
+                data = pd.read_csv(file)
+            directory = str(folder_path)
+            if plt_type == 'boxplot':
+                plot_data = sns.boxplot(data, y=y_data_column, x=x_data_column)
+                plt.title('Metrics aggregation')
+                plt.show()
+            if plt_type == 'lineplot':
+                plot_data = sns.lineplot(data, y=y_data_column, x=x_data_column)
+                plt.title('Metrics aggregation')
+                plt.show()
+
+            if plt_type == 'scatter3d':
+                plot_data = go.Figure(data=[go.Scatter3d(x=data[f'{x_data_column}'],
+                                                         y=data[f'{y_data_column}'],
+                                                         z=data[f'{z_data_column}'],
+                                                         marker=dict(opacity=0.9,
+                                                                     reversescale=True,
+                                                                     colorscale='Blues',
+                                                                     size=5),
+                                                         line=dict(width=0.02),
+                                                         mode='markers')])
+                plot_data.update_layout(title='Metrics aggregation')
+                plot_data.update_layout(scene=dict(xaxis=dict(title=f"{x_data_column}"),
+                                                   yaxis=dict(title=f"{y_data_column}"),
+                                                   zaxis=dict(title=f"{z_data_column}")), )
+                filename_data = f'{x_data_column}_{y_data_column}_{z_data_column}_3D.html'
+
+                filepath = os.path.join(directory, filename_data)
+                if os.path.exists(filepath):
+                    print(f'These graphic exists already in {filepath} directory')
+                else:
+                    py.plot(plot_data, filename=filepath)
+                    plt.show()
+        else:
+            print('Unexpected plot, to see available plots please call Visualizer.show_plots()')
+
 
 if __name__ == "__main__":
     metrics = DummyMetric()
     print(metrics.calculate())
+    o = Visualizer()
+    print(o.show_plots())
