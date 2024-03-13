@@ -33,10 +33,9 @@ def process_folder(folder_path: Path) -> pd.Series:
 
 
 if __name__ == "__main__":
-    # root_dir = Path.cwd()
-    # experiments_folder = root_dir / "data/bandwidth_optimization/"
+    root_dir = Path.cwd()
+    experiments_folder = root_dir / "data/bandwidth_optimization/"
 
-    experiments_folder = Path(r'C:\Users\mikzu\Downloads\big_exp_2')
     folders = [x for x in experiments_folder.iterdir() if x.is_dir()]
 
     df_agg = pd.DataFrame([process_folder(p) for p in folders])
