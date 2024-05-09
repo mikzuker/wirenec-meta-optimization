@@ -10,10 +10,10 @@ parametrization_hyperparams:
 
 optimization_hyperparams:
   seed: 42
-  iterations: 200
+  iterations: 300
   bandwidth: 1000
-  number_of_frequencies: 5
-  general_frequency: 7000
+  number_of_frequencies: 3
+  general_frequency: 7500
   frequencies: []
   scattering_angle: [180, ]
 
@@ -23,7 +23,11 @@ scattering_hyperparams:
   phi: 90
 
 object_hyperparams:
-  type: wire
-  obj_length: 2e-2
+  type: spatial
+  seed: 41
   dist_from_obj_to_surf: 16e-2
-  wire_radius: 5e-4
+  config: 
+    matrix_size: [3, 3, 3]
+    tau_x: 0.02
+    tau_y: 0.02
+    tau_z: 0.02

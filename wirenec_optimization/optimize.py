@@ -1,5 +1,4 @@
 import json
-import yaml
 import pickle
 from pathlib import Path
 
@@ -25,7 +24,6 @@ from wirenec_optimization.optimization_utils.visualization import plot_geometry
 from wirenec_optimization.parametrization.base_parametrization import (
     BaseStructureParametrization,
 )
-from wirenec_optimization.parametrization.sample_objects import make_wire
 
 
 def dipolar_limit(freq):
@@ -51,15 +49,9 @@ def save_results(
     config: DictConfig,
     path: str = "data/bandwidth_optimization/",
 ):
-    parametrization_hyperparams = OmegaConf.to_container(
-        config.parametrization_hyperparams, resolve=True
-    )
-    optimization_hyperparams = OmegaConf.to_container(
-        config.optimization_hyperparams, resolve=True
-    )
-    scattering_hyperparams = OmegaConf.to_container(
-        config.scattering_hyperparams, resolve=True
-    )
+    parametrization_hyperparams = OmegaConf.to_container(config.parametrization_hyperparams, resolve=True)
+    optimization_hyperparams = OmegaConf.to_container(config.optimization_hyperparams, resolve=True)
+    scattering_hyperparams = OmegaConf.to_container(config.scattering_hyperparams, resolve=True)
     object_hyperparams = OmegaConf.to_container(config.object_hyperparams, resolve=True)
 
     path += f"{parametrization.structure_name}__"
@@ -100,17 +92,11 @@ def save_results(
         scattering_phi_angle=optimization_hyperparams["scattering_angle"][0],
         color="firebrick",
         lw=2,
-        label="Scattering angle:"
-        + " "
-        + str(optimization_hyperparams["scattering_angle"][0])
-        + "$\degree$",
+        label="Scattering angle:" + " " + str(optimization_hyperparams["scattering_angle"][0]) + "$\degree$",
     )
     scatter_initial = scattering_plot(
         ax[0],
-        make_wire(
-            object_hyperparams["obj_length"],
-            object_hyperparams["dist_from_obj_to_surf"],
-        ),
+        test_obj,
         theta=scattering_hyperparams["theta"],
         eta=scattering_hyperparams["eta"],
         num_points=100,
@@ -166,14 +152,7 @@ def save_results(
             + "\n"
         )
         for i in range(len(scatter[0])):
-            fp.write(
-                str(scatter[0][i])
-                + "\t"
-                + str(scatter[1][i])
-                + "\t"
-                + str(scatter_initial[1][i])
-                + "\n"
-            )
+            fp.write(str(scatter[0][i]) + "\t" + str(scatter[1][i]) + "\t" + str(scatter_initial[1][i]) + "\n")
 
     with open(f"{path_hyperparams}/parametrization_hyperparams.json", "w+") as fp:
         json.dump(parametrization_hyperparams, fp)
@@ -194,11 +173,11 @@ def save_results(
         fp.write(get_macros(opt_structure))
     with open(f"{path_macros}/opt_with_obj_macros.txt", "w+") as fp:
         fp.write(get_macros(g_optimized))
-    with open(f"{path_vectors}/test_object.pkl", 'wb') as handle:
+    with open(f"{path_vectors}/test_object.pkl", "wb") as handle:
         pickle.dump(test_obj.wires, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    with open(f"{path_vectors}/optimized_structure.pkl", 'wb') as handle:
+    with open(f"{path_vectors}/optimized_structure.pkl", "wb") as handle:
         pickle.dump(opt_structure.wires, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    with open(f"{path_vectors}/opt_structure_with_object.pkl", 'wb') as handle:
+    with open(f"{path_vectors}/opt_structure_with_object.pkl", "wb") as handle:
         pickle.dump(g_optimized.wires, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
@@ -209,11 +188,13 @@ if __name__ == "__main__":
     if config.get("parametrization_class") == "diffuser":
         assert config.optimization_hyperparams.bandwidth is not None
         config.optimization_hyperparams.frequencies = tuple(
-            freq_maker(config.optimization_hyperparams.general_frequency, config.optimization_hyperparams.bandwidth, config.optimization_hyperparams.number_of_frequencies)
+            freq_maker(
+                config.optimization_hyperparams.general_frequency,
+                config.optimization_hyperparams.bandwidth,
+                config.optimization_hyperparams.number_of_frequencies,
+            )
         )
 
     parametrization = LayersParametrization(**config.get("parametrization_hyperparams"))
-    optimized_dict = cma_optimizer(
-        parametrization, **config.optimization_hyperparams, config=config
-    )
+    optimized_dict = cma_optimizer(parametrization, **config.optimization_hyperparams, config=config)
     save_results(parametrization, config)

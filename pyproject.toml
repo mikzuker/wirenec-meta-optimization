@@ -20,6 +20,8 @@ bayesian-optimization = "^1.4.2"
 pandas = "^2.1.4"
 omegaconf = "^2.3.0"
 ruff = "^0.2.2"
+seaborn = "^0.13.2"
+plotly = "^5.20.0"
 
 
 [tool.poetry.group.dev.dependencies]
