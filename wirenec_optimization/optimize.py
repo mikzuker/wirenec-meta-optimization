@@ -32,10 +32,7 @@ def dipolar_limit(freq):
     lengths = lbd / 2
 
     res = []
-    for (
-        i,
-        l,
-    ) in enumerate(lengths):
+    for i, l in enumerate(lengths):
         g = Geometry([Wire((0, 0, -l / 2), (0, 0, l / 2), 0.5 * 1e-3)])
         f = freq[i]
         scattering = get_scattering_in_frequency_range(g, [f], 90, 90, 0, 270)
@@ -91,6 +88,7 @@ def save_results(
         phi=scattering_hyperparams["phi"],
         num_points=100,
         scattering_phi_angle=optimization_hyperparams["scattering_angle"][0],
+        scattering_theta_angle=optimization_hyperparams["scattering_theta_angle"],
         color="firebrick",
         lw=2,
         label="Scattering angle:" + " " + str(optimization_hyperparams["scattering_angle"][0]) + "$\degree$",
@@ -103,6 +101,7 @@ def save_results(
         phi=scattering_hyperparams["phi"],
         num_points=100,
         scattering_phi_angle=optimization_hyperparams["scattering_angle"][0],
+        scattering_theta_angle=optimization_hyperparams["scattering_theta_angle"],
         color="olive",
         lw=2,
         ls=(5, (5, 5)),

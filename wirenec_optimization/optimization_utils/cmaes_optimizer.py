@@ -53,6 +53,7 @@ def objective_function(
     freq: [list, tuple, np.ndarray] = tuple([9000, 1000]),
     geometry: bool = False,
     scattering_angle: tuple = (90,),
+    scattering_theta_angle: int = 180,
     theta: int = 180,
     phi: int = 90,
     eta: int = 0,
@@ -74,6 +75,7 @@ def objective_function(
                 phi,
                 eta,
                 angle,
+                scattering_theta_angle=scattering_theta_angle
             )
             scat_on_freq.append(scattering)
         return np.mean(scat_on_freq)
@@ -104,6 +106,7 @@ def cma_optimizer(
     frequencies: Tuple = tuple([9_000]),
     plot_progress: bool = False,
     scattering_angle: tuple = (90,),
+    scattering_theta_angle: int = 180,
     population_size_factor: float = 1,
     config: Optional[DictConfig] = None,
     **kwargs: Any
@@ -139,6 +142,7 @@ def cma_optimizer(
                 params,
                 freq=frequencies,
                 scattering_angle=scattering_angle,
+                scattering_theta_angle=scattering_theta_angle,
                 phi=config.scattering_hyperparams.phi,
                 eta=config.scattering_hyperparams.eta,
                 object_params=config.object_hyperparams,

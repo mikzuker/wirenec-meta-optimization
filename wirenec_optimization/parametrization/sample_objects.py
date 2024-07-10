@@ -73,7 +73,7 @@ class SSRRParametrization(BaseObjectParametrization):
             size_ratio,
             orientation,
             wire_radius: float = 0.5 * 1e-4,
-            num: int = 2,
+            num: int = 1,
             segments_count: int = 1,
             G_ratio: float = 0.1,
     ):

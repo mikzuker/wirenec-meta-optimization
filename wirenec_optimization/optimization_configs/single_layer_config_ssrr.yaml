@@ -10,12 +10,13 @@ parametrization_hyperparams:
 
 optimization_hyperparams:
   seed: 41
-  iterations: 175
+  iterations: 10
   bandwidth: 1200
   number_of_frequencies: 15
   general_frequency: 5900
   frequencies: []
   scattering_angle: [180, ]
+  scattering_theta_angle: 180
 
 scattering_hyperparams:
   theta: 180

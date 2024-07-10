@@ -10,7 +10,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.11"
-wirenec = {git = "https://github.com/konstantgr/WireNEC"}
+wirenec = {git = "https://github.com/konstantgr/WireNEC.git"}
 matplotlib = "^3.6.2"
 cmaes = "^0.9.0"
 tqdm = "^4.64.1"
