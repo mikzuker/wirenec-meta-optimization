@@ -6,14 +6,14 @@ parametrization_hyperparams:
   layers_num: 1
   tau: 20e-3
   delta: 10e-3
-  asymmetry_factor: 0.8
+  asymmetry_factor: 0.9
 
 optimization_hyperparams:
-  seed: 42
-  iterations: 200
-  bandwidth: 1000
-  number_of_frequencies: 3
-  general_frequency: 5750
+  seed: 41
+  iterations: 175
+  bandwidth: 1200
+  number_of_frequencies: 15
+  general_frequency: 5900
   frequencies: []
   scattering_angle: [180, ]
 
@@ -23,7 +23,9 @@ scattering_hyperparams:
   phi: 90
 
 object_hyperparams:
-  type: ssr
+  type: ssrr
   dist_from_obj_to_surf: 6e-2
   size_ratio: 1.0
+  orientation: [0,0,0]
+  wire_radius: 0.1e-3
 

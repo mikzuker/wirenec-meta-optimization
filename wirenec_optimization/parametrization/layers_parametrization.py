@@ -12,14 +12,15 @@ from wirenec_optimization.parametrization.sample_objects import (
 from wirenec_optimization.parametrization import MAIN_FOLDER
 from pathlib import Path
 
-
+folder_path = Path('data/reproduced_experiments')
+folder_path.mkdir(parents=True, exist_ok=True)
 class LayersParametrization(BaseStructureParametrization):
     def __init__(self, matrix_size, layers_num, tau, delta, asymmetry_factor: float | None = 0.9):
         super().__init__("layers")
 
         self.type_mapping = {
             0: WireParametrization,
-            1: SRRParametrization
+            1: SSRRParametrization,
         }
 
         self.matrix_size = matrix_size
@@ -87,7 +88,10 @@ class LayersParametrization(BaseStructureParametrization):
                     g_tmp.translate((x, y, z))
                     wires += g_tmp.wires
 
+        # plot_geometry(wires)
+        # plot_geometry(g_tmp)
         return Geometry(wires)
+        # return g_tmp
 
 
 def create_wire_bundle_geometry(lengths, tau):
@@ -112,34 +116,10 @@ if __name__ == '__main__':
         'asymmetry_factor': None
     }
     param = LayersParametrization(**hyper_params)
-    g = param.get_random_geometry(seed=42)
-    # tau_A = 12.87 * 1.5*1e-3
-    # lengths_A = np.array([
-    #     [21.61, 19.84, 21.61],
-    #     [26, 0, 26],
-    #     [21.61, 19.84, 21.61]
-    # ]) * 2*1e-3
-    # unmoving_geometry = create_wire_bundle_geometry(lengths_A, tau_A)
-    # unmoving_geometry.translate([-3*1e-2, 0, 0])
-    # unmoving_geometry.rotate(np.pi/2, np.pi/2, 0)
-    # height = 5.
-    # length = 5
-    # gap = length/2
-    # wire_radius = 0.5 * 1e-4
-    # unmoving_geometry = Geometry([Wire((0., -height/3*1e-2,
-    #                                     height/2*1e-2), (0.,
-    #                                     height/3*1e-2, height/2*1e-2),
-    #                                     0.5 * 1e-4)])
-    # unmoving_geometry = Geometry([Wire((gap / 2, length / 2, height), (length / 2, length / 2, height), wire_radius),
-    #                               Wire((length / 2, length / 2, height), (length / 2, -length / 2, height),
-    #                                    wire_radius),
-    #                               Wire((length / 2, -length / 2, height), (-length / 2, -length / 2, height),
-    #                                    wire_radius),
-    #                               Wire((-length / 2, -length / 2, height), (-length / 2, length / 2, height),
-    #                                    wire_radius),
-    #                               Wire((-length / 2, length / 2, height), (-gap / 2, length / 2, height), wire_radius)])
-    # g.wires.extend(unmoving_geometry.wires)
-    plot_geometry(g)
+    g = param.get_random_geometry(seed=43)
+    #g_w = g.wires()
+    plot_geometry(g, from_top=True, save_to=f"{folder_path}/random_optimized_1.svg")
+    #plot_geometry(*g_w, from_top=True)
 
     # Save as CST macros
     with (MAIN_FOLDER / "../data/sample_layers_macros.txt").open('w+') as f:

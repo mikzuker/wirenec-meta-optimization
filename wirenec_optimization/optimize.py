@@ -88,6 +88,7 @@ def save_results(
         g_optimized,
         theta=scattering_hyperparams["theta"],
         eta=scattering_hyperparams["eta"],
+        phi=scattering_hyperparams["phi"],
         num_points=100,
         scattering_phi_angle=optimization_hyperparams["scattering_angle"][0],
         color="firebrick",
@@ -99,6 +100,7 @@ def save_results(
         test_obj,
         theta=scattering_hyperparams["theta"],
         eta=scattering_hyperparams["eta"],
+        phi=scattering_hyperparams["phi"],
         num_points=100,
         scattering_phi_angle=optimization_hyperparams["scattering_angle"][0],
         color="olive",
@@ -113,7 +115,7 @@ def save_results(
         else int(len(optimized_dict["params"]) / 3)
     )
 
-    ax[0].set_xlim(4_000, 10_000)
+    ax[0].set_xlim(1_000, 10_000)
     ax[0].set_ylim(-max(scatter_initial[1]) * 0.05, max(scatter_initial[1]) * 1.1)
     ax[0].axhline(0, color="k", lw=1)
     ax[0].scatter(
@@ -182,7 +184,7 @@ def save_results(
 
 
 if __name__ == "__main__":
-    config_path: Path = Path("optimization_configs/single_layer_config.yaml")
+    config_path: Path = Path("optimization_configs/single_layer_config_ssrr.yaml")
     config = parse_config(config_path)
 
     if config.get("parametrization_class") == "diffuser":

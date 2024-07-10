@@ -9,11 +9,11 @@ parametrization_hyperparams:
   asymmetry_factor: 0.8
 
 optimization_hyperparams:
-  seed: 42
-  iterations: 200
-  bandwidth: 1000
-  number_of_frequencies: 3
-  general_frequency: 4200
+  seed: 45
+  iterations: 150
+  bandwidth: 1200
+  number_of_frequencies: 15
+  general_frequency: 5500
   frequencies: []
   scattering_angle: [180, ]
 
@@ -24,6 +24,7 @@ scattering_hyperparams:
 
 object_hyperparams:
   type: srr
-  dist_from_obj_to_surf: 6e-2
+  dist_from_obj_to_surf: 4e-2
   size_ratio: 0.0
+  orientation: [0,0,0]
 
