@@ -1,0 +1,22 @@
+parametrization_name: layers
+parametrization_class: diffuser
+
+parametrization_hyperparams:
+  matrix_size: [2, 2]
+  layers_num: 1
+  tau: 20e-3
+  delta: 10e-3
+#  asymmetry_factor: None
+
+seed_hyperparams:
+  starting_seed: 1
+  ending_seed: 2
+  step: 1
+
+scattering_hyperparams:
+  frequency: [9000,]
+  theta: 180
+  eta: 0
+  phi: 90
+  theta_angle: 180
+  phi_angle: 180
