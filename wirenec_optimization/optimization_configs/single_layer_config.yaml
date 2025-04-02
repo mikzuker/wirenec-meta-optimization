@@ -1,18 +1,27 @@
-parametrization_name: layers
+#parametrization_name: layers
+#parametrization_class: diffuser
+#
+#parametrization_hyperparams:
+#  matrix_size: [3, 3]
+#  layers_num: 1
+#  tau: 35e-3
+#  delta: 10e-3
+##  asymmetry_factor: None
+
+parametrization_name: wire
 parametrization_class: diffuser
 
 parametrization_hyperparams:
-  matrix_size: [3, 3]
-  layers_num: 1
-  tau: 20e-3
-  delta: 10e-3
-  asymmetry_factor: 0.7
+  matrix_size: [3, 3, 1]
+  tau_x: 50e-3
+  tau_y: 50e-3
+  tau_z: 50e-3
 
 optimization_hyperparams:
-  seed: 42
-  iterations: 100
-  bandwidth: 1000
-  number_of_frequencies: 11
+  seed: 51
+  iterations: 15
+  bandwidth: 1400
+  number_of_frequencies: 7
   general_frequency: 6500
   frequencies: []
   scattering_angle: [180, ]
@@ -25,5 +34,5 @@ scattering_hyperparams:
 object_hyperparams:
   type: wire
   obj_length: 2e-2
-  dist_from_obj_to_surf: 1e-2
+  dist_from_obj_to_surf: 4e-2
   wire_radius: 0.5e-3

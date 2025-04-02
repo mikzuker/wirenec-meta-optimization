@@ -1,19 +1,28 @@
-parametrization_name: layers
+#parametrization_name: layers
+#parametrization_class: diffuser
+#
+#parametrization_hyperparams:
+#  matrix_size: [3, 3, 1]
+#  layers_num: 1
+#  tau: 20e-3
+#  delta: 10e-3
+#  asymmetry_factor: 0.8
+
+parametrization_name: spatial
 parametrization_class: diffuser
 
 parametrization_hyperparams:
-  matrix_size: [3, 3]
-  layers_num: 1
-  tau: 20e-3
-  delta: 10e-3
-  asymmetry_factor: 0.8
+  matrix_size: [3, 3, 1]
+  tau_x: 40e-3
+  tau_y: 40e-3
+  tau_z: 40e-3
 
 optimization_hyperparams:
-  seed: 42
-  iterations: 300
-  bandwidth: 1000
-  number_of_frequencies: 3
-  general_frequency: 7500
+  seed: 47
+  iterations: 120
+  bandwidth: 1
+  number_of_frequencies: 1
+  general_frequency: 3950
   frequencies: []
   scattering_angle: [180, ]
 
@@ -26,8 +35,9 @@ object_hyperparams:
   type: spatial
   seed: 41
   dist_from_obj_to_surf: 16e-2
-  config: 
+  config:
     matrix_size: [3, 3, 3]
-    tau_x: 0.02
-    tau_y: 0.02
-    tau_z: 0.02
+    tau_x: 0.04
+    tau_y: 0.04
+    tau_z: 0.04
+  is_object: true

@@ -21,6 +21,7 @@ class LayersParametrization(BaseStructureParametrization):
         self.type_mapping = {
             0: WireParametrization,
             1: SSRRParametrization,
+            # 1: SRRParametrization,
         }
 
         self.matrix_size = matrix_size
@@ -111,14 +112,13 @@ if __name__ == '__main__':
     hyper_params = {
         'matrix_size': (3, 3),
         'layers_num': 1,
-        'tau': 20 * 1e-3,
+        'tau': 40 * 1e-3,
         'delta': 10 * 1e-3,
         'asymmetry_factor': None
     }
     param = LayersParametrization(**hyper_params)
-    g = param.get_random_geometry(seed=43)
+    g = param.get_random_geometry(seed=45)
     #g_w = g.wires()
-    plot_geometry(g, from_top=True, save_to=f"{folder_path}/random_optimized_1.svg")
     #plot_geometry(*g_w, from_top=True)
 
     # Save as CST macros

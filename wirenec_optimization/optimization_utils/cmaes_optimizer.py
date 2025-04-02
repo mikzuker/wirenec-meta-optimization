@@ -15,7 +15,8 @@ from wirenec_optimization.parametrization.base_parametrization import (
 from wirenec.geometry import Wire, Geometry
 
 
-from wirenec_optimization.parametrization.sample_objects import make_wire, make_srr, make_ssrr
+from wirenec_optimization.parametrization.sample_objects import make_wire, make_srr, make_ssrr, \
+    SphereParametrization, SpatialParametrization
 
 
 def create_wire_bundle_geometry(lengths, tau):
@@ -40,9 +41,25 @@ def get_reference_object(object_params: DictConfig) -> Geometry:
             wire_radius=object_params.wire_radius
         )
     elif object_params.type == "srr":
-        return make_srr(size_ratio=object_params.size_ratio, orientation=object_params.orientation, height=object_params.dist_from_obj_to_surf)
+        return make_srr(size_ratio=object_params.size_ratio, orientation=object_params.orientation,
+                        height=object_params.dist_from_obj_to_surf)
     elif object_params.type == "ssrr":
-        return make_ssrr(size_ratio=object_params.size_ratio, orientation=object_params.orientation, height=object_params.dist_from_obj_to_surf, wire_radius=object_params.wire_radius)
+        return make_ssrr(size_ratio=object_params.size_ratio, orientation=object_params.orientation,
+                         height=object_params.dist_from_obj_to_surf, wire_radius=object_params.wire_radius)
+    elif object_params.type == 'sphere':
+        sphere = SphereParametrization()
+        g = sphere.get_geometry(size_ratio=object_params.size_ratio, orientation=object_params.orientation,
+                                phi_segments=object_params.config.phi_segments,
+                                theta_segments=object_params.config.theta_segments)
+        g.translate((0, 0, object_params.dist_from_obj_to_surf))
+        return g
+    elif object_params.type == "spatial":
+        g = SpatialParametrization(**object_params.config).get_random_geometry(seed=object_params.seed)
+        g.translate((0, 0, object_params.dist_from_obj_to_surf))
+        return g
+        # return make_sphere(size_ratio=object_params.size_ratio, orientation=object_params.orientation,
+        #                    height=object_params.dist_from_obj_to_surf, phi_segments=object_params.config.phi_segments,
+        #                    theta_segments=object_params.config.theta_segments)
     else:
         raise Exception("Unknown object type")
 
@@ -76,7 +93,8 @@ def objective_function(
                 angle,
             )
             scat_on_freq.append(scattering)
-        return np.mean(scat_on_freq)
+        # return np.mean(scat_on_freq)
+        return np.max(scat_on_freq)
     else:
         return g
 

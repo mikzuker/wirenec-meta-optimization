@@ -16,6 +16,7 @@ from optimization_utils.cmaes_optimizer import (
     get_reference_object,
 )
 from parametrization.layers_parametrization import LayersParametrization
+from parametrization.spatial_parametrization import SpatialParametrization
 from wirenec_optimization.optimization_configs.utils import parse_config
 from wirenec_optimization.optimization_utils.bandwidth_creating import (
     freq_maker,
@@ -54,13 +55,15 @@ def save_results(
     scattering_hyperparams = OmegaConf.to_container(config.scattering_hyperparams, resolve=True)
     object_hyperparams = OmegaConf.to_container(config.object_hyperparams, resolve=True)
 
-    path += f"{parametrization.structure_name}__"
-    path += f"{object_hyperparams['type']}__"
-    path += f"{'dist_from_obj_to_surf'}_{str(object_hyperparams['dist_from_obj_to_surf'])}__"
-    path += f"{'general_frequency'}_{str(optimization_hyperparams['general_frequency'])}__"
-    path += f"{'bandwidth'}_{str(optimization_hyperparams['bandwidth'])}__"
-    path += f"{'number_of_frequencies'}_{str(optimization_hyperparams['number_of_frequencies'])}__"
-    path += f"{'seed'}_{str(optimization_hyperparams['seed'])}__"
+    num = 31
+    path += f'{config.parametrization_name}__{num}'
+    # path += f"{parametrization.structure_name}__"
+    # path += f"{object_hyperparams['type']}__"
+    # path += f"{'dist_from_obj_to_surf'}_{str(object_hyperparams['dist_from_obj_to_surf'])}__"
+    # path += f"{'general_frequency'}_{str(optimization_hyperparams['general_frequency'])}__"
+    # path += f"{'bandwidth'}_{str(optimization_hyperparams['bandwidth'])}__"
+    # path += f"{'number_of_frequencies'}_{str(optimization_hyperparams['number_of_frequencies'])}__"
+    # path += f"{'seed'}_{str(optimization_hyperparams['seed'])}__"
 
     path = Path(path.rstrip("_"))
 
@@ -81,6 +84,7 @@ def save_results(
     )
 
     test_obj = get_reference_object(config.object_hyperparams)
+    # test_obj.rotate(np.pi/2,0,0)
     opt_structure = Geometry(g_optimized.wires[: -len(test_obj.wires)])
 
     scatter = scattering_plot(
@@ -109,13 +113,19 @@ def save_results(
         label="Initial object:" + " " + str(object_hyperparams["type"]),
     )
 
+    # parameters_count = (
+    #     int(len(optimized_dict["params"]) / 5)  # two more parameters for deltas
+    #     if parametrization_hyperparams["asymmetry_factor"] is not None
+    #     else int(len(optimized_dict["params"]) / 3)
+    # )
+
     parameters_count = (
         int(len(optimized_dict["params"]) / 5)  # two more parameters for deltas
-        if parametrization_hyperparams["asymmetry_factor"] is not None
+        if parametrization_hyperparams.get("asymmetry_factor") is not None
         else int(len(optimized_dict["params"]) / 3)
     )
 
-    ax[0].set_xlim(1_000, 10_000)
+    ax[0].set_xlim(2_000, 10_000)
     ax[0].set_ylim(-max(scatter_initial[1]) * 0.05, max(scatter_initial[1]) * 1.1)
     ax[0].axhline(0, color="k", lw=1)
     ax[0].scatter(
@@ -142,6 +152,7 @@ def save_results(
     plt.show()
 
     plot_geometry(g_optimized, from_top=False, save_to=path / "optimized_geometry.pdf")
+    # plot_geometry(test_obj, from_top=False, save_to=path / "optimized_geometry.pdf")
 
     with open(f"{path}/scat_data.json", "w+") as fp:
         fp.write(
@@ -184,7 +195,7 @@ def save_results(
 
 
 if __name__ == "__main__":
-    config_path: Path = Path("optimization_configs/single_layer_config_ssrr.yaml")
+    config_path: Path = Path("optimization_configs/single_layer_config.yaml")
     config = parse_config(config_path)
 
     if config.get("parametrization_class") == "diffuser":
@@ -197,6 +208,7 @@ if __name__ == "__main__":
             )
         )
 
-    parametrization = LayersParametrization(**config.get("parametrization_hyperparams"))
+    parametrization = SpatialParametrization(**config.get("parametrization_hyperparams"))
+    # parametrization = LayersParametrization(**config.get("parametrization_hyperparams"))
     optimized_dict = cma_optimizer(parametrization, **config.optimization_hyperparams, config=config)
     save_results(parametrization, config)

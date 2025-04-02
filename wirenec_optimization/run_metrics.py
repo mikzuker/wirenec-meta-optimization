@@ -54,4 +54,4 @@ if __name__ == "__main__":
                            y_data_column='mean',
                            x_data_column='number_of_freq',
                            # y_data_column='number_of_freq',
-                           plt_type='boxplot')
+                           plt_type='lineplot')

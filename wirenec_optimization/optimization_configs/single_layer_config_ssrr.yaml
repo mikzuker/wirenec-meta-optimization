@@ -10,7 +10,7 @@ parametrization_hyperparams:
 
 optimization_hyperparams:
   seed: 41
-  iterations: 175
+  iterations: 1
   bandwidth: 1200
   number_of_frequencies: 15
   general_frequency: 5900

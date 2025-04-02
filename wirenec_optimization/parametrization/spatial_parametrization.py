@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import numpy as np
 from wirenec.geometry import Geometry
 from wirenec.visualization import plot_geometry
@@ -7,14 +8,20 @@ from wirenec_optimization.parametrization.sample_objects import WireParametrizat
 
 
 class SpatialParametrization(BaseStructureParametrization):
-    def __init__(self, matrix_size, tau_x, tau_y, tau_z):
+    def __init__(self, matrix_size, tau_x, tau_y, tau_z, is_object=False):
         super().__init__("spatial")
 
-        self.type_mapping = {
-            0: WireParametrization,
-            1: WireParametrization,
-            # 2: SSRRParametrization
-        }
+        if is_object == False:
+            self.type_mapping = {
+                0: WireParametrization,
+                # 0: SSRRParametrization,
+                1: SSRRParametrization
+            }
+        else:
+            self.type_mapping = {
+                0: WireParametrization,
+                1: WireParametrization,
+            }
 
         self.matrix_size = matrix_size
 
@@ -69,10 +76,11 @@ class SpatialParametrization(BaseStructureParametrization):
 
 if __name__ == '__main__':
     param = SpatialParametrization(
-        matrix_size=(5, 5, 5),
+        matrix_size=(3, 3, 1),
         tau_x=20 * 1e-3,
         tau_y=20 * 1e-3,
         tau_z=20 * 1e-3,
+        is_object=False
     )
-    g = param.get_random_geometry(seed=41)
-    plot_geometry(g)
+    g = param.get_random_geometry(seed=42)
+    plot_geometry(g, from_top=False)
